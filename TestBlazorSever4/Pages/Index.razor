@@ -240,7 +240,6 @@
 
 <h3>Grid using Vistual Scroll</h3>
 <TelerikGrid Data="@GridData"
-             Pageable="true"
              Height="480px" RowHeight="60" PageSize="10" ScrollMode="@GridScrollMode.Virtual"
              Sortable="true"
              ConfirmDelete="true"
@@ -270,7 +269,6 @@
 
 <h3>Grid using Vistual Scroll</h3>
 <TelerikGrid Data="@GridData"
-             Pageable="true"
              Height="480px" RowHeight="60" PageSize="10" ScrollMode="@GridScrollMode.Virtual"
              Sortable="true"
              ConfirmDelete="true"
@@ -301,6 +299,7 @@
 
 @code {
    public List<PLSRequestModel>? GridData { get; set; }
+    public List<PLSRequestModel>? GridData1 { get; set; }
     protected override async Task OnInitializedAsync()
     {
         GridData = await GetData();
