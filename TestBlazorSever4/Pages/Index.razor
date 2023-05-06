@@ -1,19 +1,12 @@
 ﻿@page "/"
 @using System.ComponentModel;
 @using System.Runtime;
-@implements IDisposable
 
 <PageTitle>Index</PageTitle>
 
 <h3>Grid</h3>
 
-<label>
-    <input type="checkbox" @bind="GC_Collect" />
-    GC Collect Manually
-</label>
-
-<TelerikGrid @ref="@GridRef"
-             Data="@GridData"
+<TelerikGrid Data="@GridData"
              Pageable="true"
              PageSize="10"
              Sortable="true"
@@ -23,228 +16,26 @@
              Width="100%"
              Class="userprofilelisttable table-wrapper data-grid-table-wrapper">
     <GridColumns>
-        <GridCommandColumn Title="" Width="5%">
-            <GridCommandButton Command="Edit" Title="Edit"
-                               ThemeColor=""
-                               class="table-btn-icons"
-                               OnClick="@((args)=>OnPLSEdit(args.Item as PLSRequestModel))">
-                <div class="edit-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
-        <GridColumn Field="AssociatedDTROrIRNumber"
-                    Title="AssociatedDTROrIRNumberLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
+        <GridColumn Field="PLSNumber" Title="PLSNumber" />
+        <GridColumn Field="SRNumber" Title="SRNumber" />
+        <GridColumn Field="WorkOrderNumber" Title="WorkOrderNumber" />
+        <GridColumn Field="AssociatedDTROrIRNumber" Title="AssociatedDTROrIRNumber" />
+        <GridColumn Field="TeamOrEventName" Title="TeamOrEventName" />
+        <GridColumn Field="CurrentStatusText" Title="CurrentStatusText" />
+        <GridColumn Field="RedFlagText" Title="RedFlagText" />
+        <GridColumn Field="DestinationCity" Title="DestinationCity" />
+        <GridColumn Field="StartDate" Width="200px">
             <Template>
-                @{
-                    PLSRequestModel dtrnumber = (PLSRequestModel)context;
-                    <div id="target" title="@dtrnumber.AssociatedDTROrIRNumber">
-                        @dtrnumber.AssociatedDTROrIRNumber
-                    </div>
-                }
+                @((context as PLSRequestModel)?.StartDate.ToString("dd/MM/yyyy"))
             </Template>
-
-            <HeaderTemplate>
-                <div title=AssociatedDTROrIRNumberLabel>
-                    AssociatedDTROrIRNumberLabel
-                </div>
-            </HeaderTemplate>
         </GridColumn>
-        <GridColumn Field="SRNumber"
-                    Title="SRNumber"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel srnumber = (PLSRequestModel)context;
-                    <div id="target" title="@srnumber.SRNumber">
-                        @srnumber.SRNumber
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=SRNumber>
-                    SRNumber
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="DateSubmitted"
-                    Title="DateSubmitted"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" DisplayFormat="{0:dd/MMM/yyyy}" Width="17%">
-            <Template>
-                @{
-                    PLSRequestModel datesubmitted = (PLSRequestModel)context;
-                    <div id="target" title="@datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")">
-                        @datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=DateSubmitted>
-                    Model.DateSubmitted
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="ProjectTitle"
-                    Title="ProjectTitle"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel projecttitle = (PLSRequestModel)context;
-                    <div id="target" title="@projecttitle.ProjectTitle">
-                        @projecttitle.ProjectTitle
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=ProjectTitle>
-                    ProjectTitle
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTFundingProgramText"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="16%"
-                    Title="CTFundingProgramLabel">
-            <Template>
-                @{
-                    PLSRequestModel ctfundingprgm = (PLSRequestModel)context;
-                    <div id="target" title="@ctfundingprgm.CTFundingProgramText">
-                        @ctfundingprgm.CTFundingProgramText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTFundingProgramLabel>
-                    CTFundingProgramLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="FundingCountryOrProject"
-                    Title="FundingCountryOrProjectLabel"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel fundingcp = (PLSRequestModel)context;
-                    <div id="target" title="@fundingcp.FundingCountryOrProject">
-                        @fundingcp.FundingCountryOrProject
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=FundingCountryOrProjectLabel>
-                    FundingCountryOrProjectLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTRequestorName"
-                    Title="CTRequestorNameLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="15%">
-            <Template>
-                @{
-                    PLSRequestModel ctrequestorname = (PLSRequestModel)context;
-                    <div id="target" title=" @ctrequestorname.CTRequestorName">
-                        @ctrequestorname.CTRequestorName
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTRequestorNameLabel>
-                    CTRequestorNameLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="StartDate"
-                    Title="StartDate"
-                    ShowFilterCellButtons="false" DisplayFormat="{0:dd/MMM/yyyy}"
-                    Filterable="true" Width="16%">
-            <Template>
-                @{
-                    PLSRequestModel startdate = (PLSRequestModel)context;
-                    <div id="target" title="@startdate.StartDate?.ToString("dd-MMM-yyyy")">
-                        @startdate.StartDate?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=StartDate>
-                    StartDate
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CurrentStatusText"
-                    Title="CurrentStatusLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="8%">
-            <Template>
-                @{
-                    PLSRequestModel currentstatus = (PLSRequestModel)context;
-                    <div id="target" title=" @currentstatus.CurrentStatusText">
-                        @currentstatus.CurrentStatusText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CurrentStatusLabel>
-                    CurrentStatusLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="RedFlagText"
-                    Title="RegFlagLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="9%">
-            <Template>
-                @{
-                    PLSRequestModel redflag = (PLSRequestModel)context;
-                    <div id="target" title="@redflag.RedFlagText">
-                        @redflag.RedFlagText
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=RegFlagLabel>
-                    RegFlagLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridCommandColumn Title="" Width="12%">
-            <GridCommandButton Command="Copy" Title="Copy"
-                               ThemeColor=""
-                               OnClick="@((args)=> OnPLSCopy(args.Item as PLSRequestModel))"
-                               class="table-btn-icons-custom">
-                <div class="copy-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-            <GridCommandButton Command="Delete" Title="Delete"
-                               ThemeColor=""
-                               class="table-btn-icons table-trash-icon">
-                <div class="inactive-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-delete">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
+        <GridColumn Field="CTRequestorName" Title="CTRequestorName" />
+        <GridColumn Field="FundingCountryOrProject" Title="FundingCountryOrProject" />
+        <GridColumn Field="CTFundingProgramText" Title="CTFundingProgramText" />
     </GridColumns>
 </TelerikGrid>
 
-<TelerikGrid @ref="@GridRef_1"
-             Data="@GridData"
+<TelerikGrid Data="@GridData"
              Pageable="true"
              PageSize="10"
              Sortable="true"
@@ -254,227 +45,26 @@
              Width="100%"
              Class="userprofilelisttable table-wrapper data-grid-table-wrapper">
     <GridColumns>
-        <GridCommandColumn Title="" Width="5%">
-            <GridCommandButton Command="Edit" Title="Edit"
-                               ThemeColor=""
-                               class="table-btn-icons"
-                               OnClick="@((args)=>OnPLSEdit(args.Item as PLSRequestModel))">
-                <div class="edit-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
-        <GridColumn Field="AssociatedDTROrIRNumber"
-                    Title="AssociatedDTROrIRNumberLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
+        <GridColumn Field="PLSNumber" Title="PLSNumber" />
+        <GridColumn Field="SRNumber" Title="SRNumber" />
+        <GridColumn Field="WorkOrderNumber" Title="WorkOrderNumber" />
+        <GridColumn Field="AssociatedDTROrIRNumber" Title="AssociatedDTROrIRNumber" />
+        <GridColumn Field="TeamOrEventName" Title="TeamOrEventName" />
+        <GridColumn Field="CurrentStatusText" Title="CurrentStatusText" />
+        <GridColumn Field="RedFlagText" Title="RedFlagText" />
+        <GridColumn Field="DestinationCity" Title="DestinationCity" />
+        <GridColumn Field="StartDate" Width="200px">
             <Template>
-                @{
-                    PLSRequestModel dtrnumber = (PLSRequestModel)context;
-                    <div id="target" title="@dtrnumber.AssociatedDTROrIRNumber">
-                        @dtrnumber.AssociatedDTROrIRNumber
-                    </div>
-                }
+                @((context as PLSRequestModel)?.StartDate.ToString("dd/MM/yyyy"))
             </Template>
-
-            <HeaderTemplate>
-                <div title=AssociatedDTROrIRNumberLabel>
-                    AssociatedDTROrIRNumberLabel
-                </div>
-            </HeaderTemplate>
         </GridColumn>
-        <GridColumn Field="SRNumber"
-                    Title="SRNumber"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel srnumber = (PLSRequestModel)context;
-                    <div id="target" title="@srnumber.SRNumber">
-                        @srnumber.SRNumber
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=SRNumber>
-                    SRNumber
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="DateSubmitted"
-                    Title="DateSubmitted"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" DisplayFormat="{0:dd/MMM/yyyy}" Width="17%">
-            <Template>
-                @{
-                    PLSRequestModel datesubmitted = (PLSRequestModel)context;
-                    <div id="target" title="@datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")">
-                        @datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=DateSubmitted>
-                    Model.DateSubmitted
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="ProjectTitle"
-                    Title="ProjectTitle"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel projecttitle = (PLSRequestModel)context;
-                    <div id="target" title="@projecttitle.ProjectTitle">
-                        @projecttitle.ProjectTitle
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=ProjectTitle>
-                    ProjectTitle
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTFundingProgramText"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="16%"
-                    Title="CTFundingProgramLabel">
-            <Template>
-                @{
-                    PLSRequestModel ctfundingprgm = (PLSRequestModel)context;
-                    <div id="target" title="@ctfundingprgm.CTFundingProgramText">
-                        @ctfundingprgm.CTFundingProgramText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTFundingProgramLabel>
-                    CTFundingProgramLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="FundingCountryOrProject"
-                    Title="FundingCountryOrProjectLabel"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel fundingcp = (PLSRequestModel)context;
-                    <div id="target" title="@fundingcp.FundingCountryOrProject">
-                        @fundingcp.FundingCountryOrProject
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=FundingCountryOrProjectLabel>
-                    FundingCountryOrProjectLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTRequestorName"
-                    Title="CTRequestorNameLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="15%">
-            <Template>
-                @{
-                    PLSRequestModel ctrequestorname = (PLSRequestModel)context;
-                    <div id="target" title=" @ctrequestorname.CTRequestorName">
-                        @ctrequestorname.CTRequestorName
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTRequestorNameLabel>
-                    CTRequestorNameLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="StartDate"
-                    Title="StartDate"
-                    ShowFilterCellButtons="false" DisplayFormat="{0:dd/MMM/yyyy}"
-                    Filterable="true" Width="16%">
-            <Template>
-                @{
-                    PLSRequestModel startdate = (PLSRequestModel)context;
-                    <div id="target" title="@startdate.StartDate?.ToString("dd-MMM-yyyy")">
-                        @startdate.StartDate?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=StartDate>
-                    StartDate
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CurrentStatusText"
-                    Title="CurrentStatusLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="8%">
-            <Template>
-                @{
-                    PLSRequestModel currentstatus = (PLSRequestModel)context;
-                    <div id="target" title=" @currentstatus.CurrentStatusText">
-                        @currentstatus.CurrentStatusText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CurrentStatusLabel>
-                    CurrentStatusLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="RedFlagText"
-                    Title="RegFlagLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="9%">
-            <Template>
-                @{
-                    PLSRequestModel redflag = (PLSRequestModel)context;
-                    <div id="target" title="@redflag.RedFlagText">
-                        @redflag.RedFlagText
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=RegFlagLabel>
-                    RegFlagLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridCommandColumn Title="" Width="12%">
-            <GridCommandButton Command="Copy" Title="Copy"
-                               ThemeColor=""
-                               OnClick="@((args)=> OnPLSCopy(args.Item as PLSRequestModel))"
-                               class="table-btn-icons-custom">
-                <div class="copy-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-            <GridCommandButton Command="Delete" Title="Delete"
-                               ThemeColor=""
-                               class="table-btn-icons table-trash-icon">
-                <div class="inactive-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-delete">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
+        <GridColumn Field="CTRequestorName" Title="CTRequestorName" />
+        <GridColumn Field="FundingCountryOrProject" Title="FundingCountryOrProject" />
+        <GridColumn Field="CTFundingProgramText" Title="CTFundingProgramText" />
     </GridColumns>
 </TelerikGrid>
-<TelerikGrid @ref="@GridRef_2"
-             Data="@GridData"
+
+<TelerikGrid Data="@GridData"
              Pageable="true"
              PageSize="10"
              Sortable="true"
@@ -484,227 +74,26 @@
              Width="100%"
              Class="userprofilelisttable table-wrapper data-grid-table-wrapper">
     <GridColumns>
-        <GridCommandColumn Title="" Width="5%">
-            <GridCommandButton Command="Edit" Title="Edit"
-                               ThemeColor=""
-                               class="table-btn-icons"
-                               OnClick="@((args)=>OnPLSEdit(args.Item as PLSRequestModel))">
-                <div class="edit-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
-        <GridColumn Field="AssociatedDTROrIRNumber"
-                    Title="AssociatedDTROrIRNumberLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
+        <GridColumn Field="PLSNumber" Title="PLSNumber" />
+        <GridColumn Field="SRNumber" Title="SRNumber" />
+        <GridColumn Field="WorkOrderNumber" Title="WorkOrderNumber" />
+        <GridColumn Field="AssociatedDTROrIRNumber" Title="AssociatedDTROrIRNumber" />
+        <GridColumn Field="TeamOrEventName" Title="TeamOrEventName" />
+        <GridColumn Field="CurrentStatusText" Title="CurrentStatusText" />
+        <GridColumn Field="RedFlagText" Title="RedFlagText" />
+        <GridColumn Field="DestinationCity" Title="DestinationCity" />
+        <GridColumn Field="StartDate" Width="200px">
             <Template>
-                @{
-                    PLSRequestModel dtrnumber = (PLSRequestModel)context;
-                    <div id="target" title="@dtrnumber.AssociatedDTROrIRNumber">
-                        @dtrnumber.AssociatedDTROrIRNumber
-                    </div>
-                }
+                @((context as PLSRequestModel)?.StartDate.ToString("dd/MM/yyyy"))
             </Template>
-
-            <HeaderTemplate>
-                <div title=AssociatedDTROrIRNumberLabel>
-                    AssociatedDTROrIRNumberLabel
-                </div>
-            </HeaderTemplate>
         </GridColumn>
-        <GridColumn Field="SRNumber"
-                    Title="SRNumber"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel srnumber = (PLSRequestModel)context;
-                    <div id="target" title="@srnumber.SRNumber">
-                        @srnumber.SRNumber
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=SRNumber>
-                    SRNumber
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="DateSubmitted"
-                    Title="DateSubmitted"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" DisplayFormat="{0:dd/MMM/yyyy}" Width="17%">
-            <Template>
-                @{
-                    PLSRequestModel datesubmitted = (PLSRequestModel)context;
-                    <div id="target" title="@datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")">
-                        @datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=DateSubmitted>
-                    Model.DateSubmitted
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="ProjectTitle"
-                    Title="ProjectTitle"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel projecttitle = (PLSRequestModel)context;
-                    <div id="target" title="@projecttitle.ProjectTitle">
-                        @projecttitle.ProjectTitle
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=ProjectTitle>
-                    ProjectTitle
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTFundingProgramText"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="16%"
-                    Title="CTFundingProgramLabel">
-            <Template>
-                @{
-                    PLSRequestModel ctfundingprgm = (PLSRequestModel)context;
-                    <div id="target" title="@ctfundingprgm.CTFundingProgramText">
-                        @ctfundingprgm.CTFundingProgramText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTFundingProgramLabel>
-                    CTFundingProgramLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="FundingCountryOrProject"
-                    Title="FundingCountryOrProjectLabel"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel fundingcp = (PLSRequestModel)context;
-                    <div id="target" title="@fundingcp.FundingCountryOrProject">
-                        @fundingcp.FundingCountryOrProject
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=FundingCountryOrProjectLabel>
-                    FundingCountryOrProjectLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTRequestorName"
-                    Title="CTRequestorNameLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="15%">
-            <Template>
-                @{
-                    PLSRequestModel ctrequestorname = (PLSRequestModel)context;
-                    <div id="target" title=" @ctrequestorname.CTRequestorName">
-                        @ctrequestorname.CTRequestorName
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTRequestorNameLabel>
-                    CTRequestorNameLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="StartDate"
-                    Title="StartDate"
-                    ShowFilterCellButtons="false" DisplayFormat="{0:dd/MMM/yyyy}"
-                    Filterable="true" Width="16%">
-            <Template>
-                @{
-                    PLSRequestModel startdate = (PLSRequestModel)context;
-                    <div id="target" title="@startdate.StartDate?.ToString("dd-MMM-yyyy")">
-                        @startdate.StartDate?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=StartDate>
-                    StartDate
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CurrentStatusText"
-                    Title="CurrentStatusLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="8%">
-            <Template>
-                @{
-                    PLSRequestModel currentstatus = (PLSRequestModel)context;
-                    <div id="target" title=" @currentstatus.CurrentStatusText">
-                        @currentstatus.CurrentStatusText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CurrentStatusLabel>
-                    CurrentStatusLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="RedFlagText"
-                    Title="RegFlagLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="9%">
-            <Template>
-                @{
-                    PLSRequestModel redflag = (PLSRequestModel)context;
-                    <div id="target" title="@redflag.RedFlagText">
-                        @redflag.RedFlagText
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=RegFlagLabel>
-                    RegFlagLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridCommandColumn Title="" Width="12%">
-            <GridCommandButton Command="Copy" Title="Copy"
-                               ThemeColor=""
-                               OnClick="@((args)=> OnPLSCopy(args.Item as PLSRequestModel))"
-                               class="table-btn-icons-custom">
-                <div class="copy-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-            <GridCommandButton Command="Delete" Title="Delete"
-                               ThemeColor=""
-                               class="table-btn-icons table-trash-icon">
-                <div class="inactive-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-delete">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
+        <GridColumn Field="CTRequestorName" Title="CTRequestorName" />
+        <GridColumn Field="FundingCountryOrProject" Title="FundingCountryOrProject" />
+        <GridColumn Field="CTFundingProgramText" Title="CTFundingProgramText" />
     </GridColumns>
 </TelerikGrid>
-<TelerikGrid @ref="@GridRef_3"
-             Data="@GridData"
+
+<TelerikGrid Data="@GridData"
              Pageable="true"
              PageSize="10"
              Sortable="true"
@@ -714,227 +103,26 @@
              Width="100%"
              Class="userprofilelisttable table-wrapper data-grid-table-wrapper">
     <GridColumns>
-        <GridCommandColumn Title="" Width="5%">
-            <GridCommandButton Command="Edit" Title="Edit"
-                               ThemeColor=""
-                               class="table-btn-icons"
-                               OnClick="@((args)=>OnPLSEdit(args.Item as PLSRequestModel))">
-                <div class="edit-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
-        <GridColumn Field="AssociatedDTROrIRNumber"
-                    Title="AssociatedDTROrIRNumberLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
+        <GridColumn Field="PLSNumber" Title="PLSNumber" />
+        <GridColumn Field="SRNumber" Title="SRNumber" />
+        <GridColumn Field="WorkOrderNumber" Title="WorkOrderNumber" />
+        <GridColumn Field="AssociatedDTROrIRNumber" Title="AssociatedDTROrIRNumber" />
+        <GridColumn Field="TeamOrEventName" Title="TeamOrEventName" />
+        <GridColumn Field="CurrentStatusText" Title="CurrentStatusText" />
+        <GridColumn Field="RedFlagText" Title="RedFlagText" />
+        <GridColumn Field="DestinationCity" Title="DestinationCity" />
+        <GridColumn Field="StartDate" Width="200px">
             <Template>
-                @{
-                    PLSRequestModel dtrnumber = (PLSRequestModel)context;
-                    <div id="target" title="@dtrnumber.AssociatedDTROrIRNumber">
-                        @dtrnumber.AssociatedDTROrIRNumber
-                    </div>
-                }
+                @((context as PLSRequestModel)?.StartDate.ToString("dd/MM/yyyy"))
             </Template>
-
-            <HeaderTemplate>
-                <div title=AssociatedDTROrIRNumberLabel>
-                    AssociatedDTROrIRNumberLabel
-                </div>
-            </HeaderTemplate>
         </GridColumn>
-        <GridColumn Field="SRNumber"
-                    Title="SRNumber"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel srnumber = (PLSRequestModel)context;
-                    <div id="target" title="@srnumber.SRNumber">
-                        @srnumber.SRNumber
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=SRNumber>
-                    SRNumber
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="DateSubmitted"
-                    Title="DateSubmitted"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" DisplayFormat="{0:dd/MMM/yyyy}" Width="17%">
-            <Template>
-                @{
-                    PLSRequestModel datesubmitted = (PLSRequestModel)context;
-                    <div id="target" title="@datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")">
-                        @datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=DateSubmitted>
-                    Model.DateSubmitted
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="ProjectTitle"
-                    Title="ProjectTitle"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel projecttitle = (PLSRequestModel)context;
-                    <div id="target" title="@projecttitle.ProjectTitle">
-                        @projecttitle.ProjectTitle
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=ProjectTitle>
-                    ProjectTitle
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTFundingProgramText"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="16%"
-                    Title="CTFundingProgramLabel">
-            <Template>
-                @{
-                    PLSRequestModel ctfundingprgm = (PLSRequestModel)context;
-                    <div id="target" title="@ctfundingprgm.CTFundingProgramText">
-                        @ctfundingprgm.CTFundingProgramText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTFundingProgramLabel>
-                    CTFundingProgramLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="FundingCountryOrProject"
-                    Title="FundingCountryOrProjectLabel"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel fundingcp = (PLSRequestModel)context;
-                    <div id="target" title="@fundingcp.FundingCountryOrProject">
-                        @fundingcp.FundingCountryOrProject
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=FundingCountryOrProjectLabel>
-                    FundingCountryOrProjectLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTRequestorName"
-                    Title="CTRequestorNameLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="15%">
-            <Template>
-                @{
-                    PLSRequestModel ctrequestorname = (PLSRequestModel)context;
-                    <div id="target" title=" @ctrequestorname.CTRequestorName">
-                        @ctrequestorname.CTRequestorName
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTRequestorNameLabel>
-                    CTRequestorNameLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="StartDate"
-                    Title="StartDate"
-                    ShowFilterCellButtons="false" DisplayFormat="{0:dd/MMM/yyyy}"
-                    Filterable="true" Width="16%">
-            <Template>
-                @{
-                    PLSRequestModel startdate = (PLSRequestModel)context;
-                    <div id="target" title="@startdate.StartDate?.ToString("dd-MMM-yyyy")">
-                        @startdate.StartDate?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=StartDate>
-                    StartDate
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CurrentStatusText"
-                    Title="CurrentStatusLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="8%">
-            <Template>
-                @{
-                    PLSRequestModel currentstatus = (PLSRequestModel)context;
-                    <div id="target" title=" @currentstatus.CurrentStatusText">
-                        @currentstatus.CurrentStatusText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CurrentStatusLabel>
-                    CurrentStatusLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="RedFlagText"
-                    Title="RegFlagLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="9%">
-            <Template>
-                @{
-                    PLSRequestModel redflag = (PLSRequestModel)context;
-                    <div id="target" title="@redflag.RedFlagText">
-                        @redflag.RedFlagText
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=RegFlagLabel>
-                    RegFlagLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridCommandColumn Title="" Width="12%">
-            <GridCommandButton Command="Copy" Title="Copy"
-                               ThemeColor=""
-                               OnClick="@((args)=> OnPLSCopy(args.Item as PLSRequestModel))"
-                               class="table-btn-icons-custom">
-                <div class="copy-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-            <GridCommandButton Command="Delete" Title="Delete"
-                               ThemeColor=""
-                               class="table-btn-icons table-trash-icon">
-                <div class="inactive-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-delete">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
+        <GridColumn Field="CTRequestorName" Title="CTRequestorName" />
+        <GridColumn Field="FundingCountryOrProject" Title="FundingCountryOrProject" />
+        <GridColumn Field="CTFundingProgramText" Title="CTFundingProgramText" />
     </GridColumns>
 </TelerikGrid>
-<TelerikGrid @ref="@GridRef_4"
-             Data="@GridData"
+
+<TelerikGrid Data="@GridData"
              Pageable="true"
              PageSize="10"
              Sortable="true"
@@ -944,227 +132,26 @@
              Width="100%"
              Class="userprofilelisttable table-wrapper data-grid-table-wrapper">
     <GridColumns>
-        <GridCommandColumn Title="" Width="5%">
-            <GridCommandButton Command="Edit" Title="Edit"
-                               ThemeColor=""
-                               class="table-btn-icons"
-                               OnClick="@((args)=>OnPLSEdit(args.Item as PLSRequestModel))">
-                <div class="edit-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
-        <GridColumn Field="AssociatedDTROrIRNumber"
-                    Title="AssociatedDTROrIRNumberLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
+        <GridColumn Field="PLSNumber" Title="PLSNumber" />
+        <GridColumn Field="SRNumber" Title="SRNumber" />
+        <GridColumn Field="WorkOrderNumber" Title="WorkOrderNumber" />
+        <GridColumn Field="AssociatedDTROrIRNumber" Title="AssociatedDTROrIRNumber" />
+        <GridColumn Field="TeamOrEventName" Title="TeamOrEventName" />
+        <GridColumn Field="CurrentStatusText" Title="CurrentStatusText" />
+        <GridColumn Field="RedFlagText" Title="RedFlagText" />
+        <GridColumn Field="DestinationCity" Title="DestinationCity" />
+        <GridColumn Field="StartDate" Width="200px">
             <Template>
-                @{
-                    PLSRequestModel dtrnumber = (PLSRequestModel)context;
-                    <div id="target" title="@dtrnumber.AssociatedDTROrIRNumber">
-                        @dtrnumber.AssociatedDTROrIRNumber
-                    </div>
-                }
+                @((context as PLSRequestModel)?.StartDate.ToString("dd/MM/yyyy"))
             </Template>
-
-            <HeaderTemplate>
-                <div title=AssociatedDTROrIRNumberLabel>
-                    AssociatedDTROrIRNumberLabel
-                </div>
-            </HeaderTemplate>
         </GridColumn>
-        <GridColumn Field="SRNumber"
-                    Title="SRNumber"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel srnumber = (PLSRequestModel)context;
-                    <div id="target" title="@srnumber.SRNumber">
-                        @srnumber.SRNumber
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=SRNumber>
-                    SRNumber
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="DateSubmitted"
-                    Title="DateSubmitted"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" DisplayFormat="{0:dd/MMM/yyyy}" Width="17%">
-            <Template>
-                @{
-                    PLSRequestModel datesubmitted = (PLSRequestModel)context;
-                    <div id="target" title="@datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")">
-                        @datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=DateSubmitted>
-                    Model.DateSubmitted
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="ProjectTitle"
-                    Title="ProjectTitle"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel projecttitle = (PLSRequestModel)context;
-                    <div id="target" title="@projecttitle.ProjectTitle">
-                        @projecttitle.ProjectTitle
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=ProjectTitle>
-                    ProjectTitle
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTFundingProgramText"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="16%"
-                    Title="CTFundingProgramLabel">
-            <Template>
-                @{
-                    PLSRequestModel ctfundingprgm = (PLSRequestModel)context;
-                    <div id="target" title="@ctfundingprgm.CTFundingProgramText">
-                        @ctfundingprgm.CTFundingProgramText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTFundingProgramLabel>
-                    CTFundingProgramLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="FundingCountryOrProject"
-                    Title="FundingCountryOrProjectLabel"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel fundingcp = (PLSRequestModel)context;
-                    <div id="target" title="@fundingcp.FundingCountryOrProject">
-                        @fundingcp.FundingCountryOrProject
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=FundingCountryOrProjectLabel>
-                    FundingCountryOrProjectLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTRequestorName"
-                    Title="CTRequestorNameLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="15%">
-            <Template>
-                @{
-                    PLSRequestModel ctrequestorname = (PLSRequestModel)context;
-                    <div id="target" title=" @ctrequestorname.CTRequestorName">
-                        @ctrequestorname.CTRequestorName
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTRequestorNameLabel>
-                    CTRequestorNameLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="StartDate"
-                    Title="StartDate"
-                    ShowFilterCellButtons="false" DisplayFormat="{0:dd/MMM/yyyy}"
-                    Filterable="true" Width="16%">
-            <Template>
-                @{
-                    PLSRequestModel startdate = (PLSRequestModel)context;
-                    <div id="target" title="@startdate.StartDate?.ToString("dd-MMM-yyyy")">
-                        @startdate.StartDate?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=StartDate>
-                    StartDate
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CurrentStatusText"
-                    Title="CurrentStatusLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="8%">
-            <Template>
-                @{
-                    PLSRequestModel currentstatus = (PLSRequestModel)context;
-                    <div id="target" title=" @currentstatus.CurrentStatusText">
-                        @currentstatus.CurrentStatusText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CurrentStatusLabel>
-                    CurrentStatusLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="RedFlagText"
-                    Title="RegFlagLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="9%">
-            <Template>
-                @{
-                    PLSRequestModel redflag = (PLSRequestModel)context;
-                    <div id="target" title="@redflag.RedFlagText">
-                        @redflag.RedFlagText
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=RegFlagLabel>
-                    RegFlagLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridCommandColumn Title="" Width="12%">
-            <GridCommandButton Command="Copy" Title="Copy"
-                               ThemeColor=""
-                               OnClick="@((args)=> OnPLSCopy(args.Item as PLSRequestModel))"
-                               class="table-btn-icons-custom">
-                <div class="copy-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-            <GridCommandButton Command="Delete" Title="Delete"
-                               ThemeColor=""
-                               class="table-btn-icons table-trash-icon">
-                <div class="inactive-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-delete">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
+        <GridColumn Field="CTRequestorName" Title="CTRequestorName" />
+        <GridColumn Field="FundingCountryOrProject" Title="FundingCountryOrProject" />
+        <GridColumn Field="CTFundingProgramText" Title="CTFundingProgramText" />
     </GridColumns>
 </TelerikGrid>
-<TelerikGrid @ref="@GridRef_5"
-             Data="@GridData"
+
+<TelerikGrid Data="@GridData"
              Pageable="true"
              PageSize="10"
              Sortable="true"
@@ -1174,227 +161,26 @@
              Width="100%"
              Class="userprofilelisttable table-wrapper data-grid-table-wrapper">
     <GridColumns>
-        <GridCommandColumn Title="" Width="5%">
-            <GridCommandButton Command="Edit" Title="Edit"
-                               ThemeColor=""
-                               class="table-btn-icons"
-                               OnClick="@((args)=>OnPLSEdit(args.Item as PLSRequestModel))">
-                <div class="edit-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
-        <GridColumn Field="AssociatedDTROrIRNumber"
-                    Title="AssociatedDTROrIRNumberLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
+        <GridColumn Field="PLSNumber" Title="PLSNumber" />
+        <GridColumn Field="SRNumber" Title="SRNumber" />
+        <GridColumn Field="WorkOrderNumber" Title="WorkOrderNumber" />
+        <GridColumn Field="AssociatedDTROrIRNumber" Title="AssociatedDTROrIRNumber" />
+        <GridColumn Field="TeamOrEventName" Title="TeamOrEventName" />
+        <GridColumn Field="CurrentStatusText" Title="CurrentStatusText" />
+        <GridColumn Field="RedFlagText" Title="RedFlagText" />
+        <GridColumn Field="DestinationCity" Title="DestinationCity" />
+        <GridColumn Field="StartDate" Width="200px">
             <Template>
-                @{
-                    PLSRequestModel dtrnumber = (PLSRequestModel)context;
-                    <div id="target" title="@dtrnumber.AssociatedDTROrIRNumber">
-                        @dtrnumber.AssociatedDTROrIRNumber
-                    </div>
-                }
+                @((context as PLSRequestModel)?.StartDate.ToString("dd/MM/yyyy"))
             </Template>
-
-            <HeaderTemplate>
-                <div title=AssociatedDTROrIRNumberLabel>
-                    AssociatedDTROrIRNumberLabel
-                </div>
-            </HeaderTemplate>
         </GridColumn>
-        <GridColumn Field="SRNumber"
-                    Title="SRNumber"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel srnumber = (PLSRequestModel)context;
-                    <div id="target" title="@srnumber.SRNumber">
-                        @srnumber.SRNumber
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=SRNumber>
-                    SRNumber
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="DateSubmitted"
-                    Title="DateSubmitted"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" DisplayFormat="{0:dd/MMM/yyyy}" Width="17%">
-            <Template>
-                @{
-                    PLSRequestModel datesubmitted = (PLSRequestModel)context;
-                    <div id="target" title="@datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")">
-                        @datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=DateSubmitted>
-                    Model.DateSubmitted
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="ProjectTitle"
-                    Title="ProjectTitle"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel projecttitle = (PLSRequestModel)context;
-                    <div id="target" title="@projecttitle.ProjectTitle">
-                        @projecttitle.ProjectTitle
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=ProjectTitle>
-                    ProjectTitle
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTFundingProgramText"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="16%"
-                    Title="CTFundingProgramLabel">
-            <Template>
-                @{
-                    PLSRequestModel ctfundingprgm = (PLSRequestModel)context;
-                    <div id="target" title="@ctfundingprgm.CTFundingProgramText">
-                        @ctfundingprgm.CTFundingProgramText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTFundingProgramLabel>
-                    CTFundingProgramLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="FundingCountryOrProject"
-                    Title="FundingCountryOrProjectLabel"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel fundingcp = (PLSRequestModel)context;
-                    <div id="target" title="@fundingcp.FundingCountryOrProject">
-                        @fundingcp.FundingCountryOrProject
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=FundingCountryOrProjectLabel>
-                    FundingCountryOrProjectLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTRequestorName"
-                    Title="CTRequestorNameLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="15%">
-            <Template>
-                @{
-                    PLSRequestModel ctrequestorname = (PLSRequestModel)context;
-                    <div id="target" title=" @ctrequestorname.CTRequestorName">
-                        @ctrequestorname.CTRequestorName
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTRequestorNameLabel>
-                    CTRequestorNameLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="StartDate"
-                    Title="StartDate"
-                    ShowFilterCellButtons="false" DisplayFormat="{0:dd/MMM/yyyy}"
-                    Filterable="true" Width="16%">
-            <Template>
-                @{
-                    PLSRequestModel startdate = (PLSRequestModel)context;
-                    <div id="target" title="@startdate.StartDate?.ToString("dd-MMM-yyyy")">
-                        @startdate.StartDate?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=StartDate>
-                    StartDate
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CurrentStatusText"
-                    Title="CurrentStatusLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="8%">
-            <Template>
-                @{
-                    PLSRequestModel currentstatus = (PLSRequestModel)context;
-                    <div id="target" title=" @currentstatus.CurrentStatusText">
-                        @currentstatus.CurrentStatusText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CurrentStatusLabel>
-                    CurrentStatusLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="RedFlagText"
-                    Title="RegFlagLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="9%">
-            <Template>
-                @{
-                    PLSRequestModel redflag = (PLSRequestModel)context;
-                    <div id="target" title="@redflag.RedFlagText">
-                        @redflag.RedFlagText
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=RegFlagLabel>
-                    RegFlagLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridCommandColumn Title="" Width="12%">
-            <GridCommandButton Command="Copy" Title="Copy"
-                               ThemeColor=""
-                               OnClick="@((args)=> OnPLSCopy(args.Item as PLSRequestModel))"
-                               class="table-btn-icons-custom">
-                <div class="copy-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-            <GridCommandButton Command="Delete" Title="Delete"
-                               ThemeColor=""
-                               class="table-btn-icons table-trash-icon">
-                <div class="inactive-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-delete">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
+        <GridColumn Field="CTRequestorName" Title="CTRequestorName" />
+        <GridColumn Field="FundingCountryOrProject" Title="FundingCountryOrProject" />
+        <GridColumn Field="CTFundingProgramText" Title="CTFundingProgramText" />
     </GridColumns>
 </TelerikGrid>
-<TelerikGrid @ref="@GridRef_6"
-             Data="@GridData"
+
+<TelerikGrid Data="@GridData"
              Pageable="true"
              PageSize="10"
              Sortable="true"
@@ -1404,227 +190,26 @@
              Width="100%"
              Class="userprofilelisttable table-wrapper data-grid-table-wrapper">
     <GridColumns>
-        <GridCommandColumn Title="" Width="5%">
-            <GridCommandButton Command="Edit" Title="Edit"
-                               ThemeColor=""
-                               class="table-btn-icons"
-                               OnClick="@((args)=>OnPLSEdit(args.Item as PLSRequestModel))">
-                <div class="edit-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
-        <GridColumn Field="AssociatedDTROrIRNumber"
-                    Title="AssociatedDTROrIRNumberLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
+        <GridColumn Field="PLSNumber" Title="PLSNumber" />
+        <GridColumn Field="SRNumber" Title="SRNumber" />
+        <GridColumn Field="WorkOrderNumber" Title="WorkOrderNumber" />
+        <GridColumn Field="AssociatedDTROrIRNumber" Title="AssociatedDTROrIRNumber" />
+        <GridColumn Field="TeamOrEventName" Title="TeamOrEventName" />
+        <GridColumn Field="CurrentStatusText" Title="CurrentStatusText" />
+        <GridColumn Field="RedFlagText" Title="RedFlagText" />
+        <GridColumn Field="DestinationCity" Title="DestinationCity" />
+        <GridColumn Field="StartDate" Width="200px">
             <Template>
-                @{
-                    PLSRequestModel dtrnumber = (PLSRequestModel)context;
-                    <div id="target" title="@dtrnumber.AssociatedDTROrIRNumber">
-                        @dtrnumber.AssociatedDTROrIRNumber
-                    </div>
-                }
+                @((context as PLSRequestModel)?.StartDate.ToString("dd/MM/yyyy"))
             </Template>
-
-            <HeaderTemplate>
-                <div title=AssociatedDTROrIRNumberLabel>
-                    AssociatedDTROrIRNumberLabel
-                </div>
-            </HeaderTemplate>
         </GridColumn>
-        <GridColumn Field="SRNumber"
-                    Title="SRNumber"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel srnumber = (PLSRequestModel)context;
-                    <div id="target" title="@srnumber.SRNumber">
-                        @srnumber.SRNumber
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=SRNumber>
-                    SRNumber
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="DateSubmitted"
-                    Title="DateSubmitted"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" DisplayFormat="{0:dd/MMM/yyyy}" Width="17%">
-            <Template>
-                @{
-                    PLSRequestModel datesubmitted = (PLSRequestModel)context;
-                    <div id="target" title="@datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")">
-                        @datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=DateSubmitted>
-                    Model.DateSubmitted
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="ProjectTitle"
-                    Title="ProjectTitle"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel projecttitle = (PLSRequestModel)context;
-                    <div id="target" title="@projecttitle.ProjectTitle">
-                        @projecttitle.ProjectTitle
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=ProjectTitle>
-                    ProjectTitle
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTFundingProgramText"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="16%"
-                    Title="CTFundingProgramLabel">
-            <Template>
-                @{
-                    PLSRequestModel ctfundingprgm = (PLSRequestModel)context;
-                    <div id="target" title="@ctfundingprgm.CTFundingProgramText">
-                        @ctfundingprgm.CTFundingProgramText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTFundingProgramLabel>
-                    CTFundingProgramLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="FundingCountryOrProject"
-                    Title="FundingCountryOrProjectLabel"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel fundingcp = (PLSRequestModel)context;
-                    <div id="target" title="@fundingcp.FundingCountryOrProject">
-                        @fundingcp.FundingCountryOrProject
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=FundingCountryOrProjectLabel>
-                    FundingCountryOrProjectLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTRequestorName"
-                    Title="CTRequestorNameLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="15%">
-            <Template>
-                @{
-                    PLSRequestModel ctrequestorname = (PLSRequestModel)context;
-                    <div id="target" title=" @ctrequestorname.CTRequestorName">
-                        @ctrequestorname.CTRequestorName
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTRequestorNameLabel>
-                    CTRequestorNameLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="StartDate"
-                    Title="StartDate"
-                    ShowFilterCellButtons="false" DisplayFormat="{0:dd/MMM/yyyy}"
-                    Filterable="true" Width="16%">
-            <Template>
-                @{
-                    PLSRequestModel startdate = (PLSRequestModel)context;
-                    <div id="target" title="@startdate.StartDate?.ToString("dd-MMM-yyyy")">
-                        @startdate.StartDate?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=StartDate>
-                    StartDate
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CurrentStatusText"
-                    Title="CurrentStatusLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="8%">
-            <Template>
-                @{
-                    PLSRequestModel currentstatus = (PLSRequestModel)context;
-                    <div id="target" title=" @currentstatus.CurrentStatusText">
-                        @currentstatus.CurrentStatusText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CurrentStatusLabel>
-                    CurrentStatusLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="RedFlagText"
-                    Title="RegFlagLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="9%">
-            <Template>
-                @{
-                    PLSRequestModel redflag = (PLSRequestModel)context;
-                    <div id="target" title="@redflag.RedFlagText">
-                        @redflag.RedFlagText
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=RegFlagLabel>
-                    RegFlagLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridCommandColumn Title="" Width="12%">
-            <GridCommandButton Command="Copy" Title="Copy"
-                               ThemeColor=""
-                               OnClick="@((args)=> OnPLSCopy(args.Item as PLSRequestModel))"
-                               class="table-btn-icons-custom">
-                <div class="copy-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-            <GridCommandButton Command="Delete" Title="Delete"
-                               ThemeColor=""
-                               class="table-btn-icons table-trash-icon">
-                <div class="inactive-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-delete">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
+        <GridColumn Field="CTRequestorName" Title="CTRequestorName" />
+        <GridColumn Field="FundingCountryOrProject" Title="FundingCountryOrProject" />
+        <GridColumn Field="CTFundingProgramText" Title="CTFundingProgramText" />
     </GridColumns>
 </TelerikGrid>
-<TelerikGrid @ref="@GridRef_7"
-             Data="@GridData"
+
+<TelerikGrid Data="@GridData"
              Pageable="true"
              PageSize="10"
              Sortable="true"
@@ -1634,229 +219,29 @@
              Width="100%"
              Class="userprofilelisttable table-wrapper data-grid-table-wrapper">
     <GridColumns>
-        <GridCommandColumn Title="" Width="5%">
-            <GridCommandButton Command="Edit" Title="Edit"
-                               ThemeColor=""
-                               class="table-btn-icons"
-                               OnClick="@((args)=>OnPLSEdit(args.Item as PLSRequestModel))">
-                <div class="edit-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
-        <GridColumn Field="AssociatedDTROrIRNumber"
-                    Title="AssociatedDTROrIRNumberLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
+        <GridColumn Field="PLSNumber" Title="PLSNumber" />
+        <GridColumn Field="SRNumber" Title="SRNumber" />
+        <GridColumn Field="WorkOrderNumber" Title="WorkOrderNumber" />
+        <GridColumn Field="AssociatedDTROrIRNumber" Title="AssociatedDTROrIRNumber" />
+        <GridColumn Field="TeamOrEventName" Title="TeamOrEventName" />
+        <GridColumn Field="CurrentStatusText" Title="CurrentStatusText" />
+        <GridColumn Field="RedFlagText" Title="RedFlagText" />
+        <GridColumn Field="DestinationCity" Title="DestinationCity" />
+        <GridColumn Field="StartDate" Width="200px">
             <Template>
-                @{
-                    PLSRequestModel dtrnumber = (PLSRequestModel)context;
-                    <div id="target" title="@dtrnumber.AssociatedDTROrIRNumber">
-                        @dtrnumber.AssociatedDTROrIRNumber
-                    </div>
-                }
+                @((context as PLSRequestModel)?.StartDate.ToString("dd/MM/yyyy"))
             </Template>
-
-            <HeaderTemplate>
-                <div title=AssociatedDTROrIRNumberLabel>
-                    AssociatedDTROrIRNumberLabel
-                </div>
-            </HeaderTemplate>
         </GridColumn>
-        <GridColumn Field="SRNumber"
-                    Title="SRNumber"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel srnumber = (PLSRequestModel)context;
-                    <div id="target" title="@srnumber.SRNumber">
-                        @srnumber.SRNumber
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=SRNumber>
-                    SRNumber
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="DateSubmitted"
-                    Title="DateSubmitted"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" DisplayFormat="{0:dd/MMM/yyyy}" Width="17%">
-            <Template>
-                @{
-                    PLSRequestModel datesubmitted = (PLSRequestModel)context;
-                    <div id="target" title="@datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")">
-                        @datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=DateSubmitted>
-                    Model.DateSubmitted
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="ProjectTitle"
-                    Title="ProjectTitle"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel projecttitle = (PLSRequestModel)context;
-                    <div id="target" title="@projecttitle.ProjectTitle">
-                        @projecttitle.ProjectTitle
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=ProjectTitle>
-                    ProjectTitle
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTFundingProgramText"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="16%"
-                    Title="CTFundingProgramLabel">
-            <Template>
-                @{
-                    PLSRequestModel ctfundingprgm = (PLSRequestModel)context;
-                    <div id="target" title="@ctfundingprgm.CTFundingProgramText">
-                        @ctfundingprgm.CTFundingProgramText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTFundingProgramLabel>
-                    CTFundingProgramLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="FundingCountryOrProject"
-                    Title="FundingCountryOrProjectLabel"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel fundingcp = (PLSRequestModel)context;
-                    <div id="target" title="@fundingcp.FundingCountryOrProject">
-                        @fundingcp.FundingCountryOrProject
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=FundingCountryOrProjectLabel>
-                    FundingCountryOrProjectLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTRequestorName"
-                    Title="CTRequestorNameLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="15%">
-            <Template>
-                @{
-                    PLSRequestModel ctrequestorname = (PLSRequestModel)context;
-                    <div id="target" title=" @ctrequestorname.CTRequestorName">
-                        @ctrequestorname.CTRequestorName
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTRequestorNameLabel>
-                    CTRequestorNameLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="StartDate"
-                    Title="StartDate"
-                    ShowFilterCellButtons="false" DisplayFormat="{0:dd/MMM/yyyy}"
-                    Filterable="true" Width="16%">
-            <Template>
-                @{
-                    PLSRequestModel startdate = (PLSRequestModel)context;
-                    <div id="target" title="@startdate.StartDate?.ToString("dd-MMM-yyyy")">
-                        @startdate.StartDate?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=StartDate>
-                    StartDate
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CurrentStatusText"
-                    Title="CurrentStatusLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="8%">
-            <Template>
-                @{
-                    PLSRequestModel currentstatus = (PLSRequestModel)context;
-                    <div id="target" title=" @currentstatus.CurrentStatusText">
-                        @currentstatus.CurrentStatusText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CurrentStatusLabel>
-                    CurrentStatusLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="RedFlagText"
-                    Title="RegFlagLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="9%">
-            <Template>
-                @{
-                    PLSRequestModel redflag = (PLSRequestModel)context;
-                    <div id="target" title="@redflag.RedFlagText">
-                        @redflag.RedFlagText
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=RegFlagLabel>
-                    RegFlagLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridCommandColumn Title="" Width="12%">
-            <GridCommandButton Command="Copy" Title="Copy"
-                               ThemeColor=""
-                               OnClick="@((args)=> OnPLSCopy(args.Item as PLSRequestModel))"
-                               class="table-btn-icons-custom">
-                <div class="copy-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-            <GridCommandButton Command="Delete" Title="Delete"
-                               ThemeColor=""
-                               class="table-btn-icons table-trash-icon">
-                <div class="inactive-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-delete">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
+        <GridColumn Field="CTRequestorName" Title="CTRequestorName" />
+        <GridColumn Field="FundingCountryOrProject" Title="FundingCountryOrProject" />
+        <GridColumn Field="CTFundingProgramText" Title="CTFundingProgramText" />
     </GridColumns>
 </TelerikGrid>
-<TelerikGrid @ref="@GridRef_8"
-             Data="@GridData"
+
+<h3>Grid using Vistual Scroll</h3>
+<TelerikGrid Data="@GridData"
              Pageable="true"
-             PageSize="10"
+             Height="480px" RowHeight="60" PageSize="10" ScrollMode="@GridScrollMode.Virtual"
              Sortable="true"
              ConfirmDelete="true"
              SortMode="@SortMode.Multiple"
@@ -1864,229 +249,29 @@
              Width="100%"
              Class="userprofilelisttable table-wrapper data-grid-table-wrapper">
     <GridColumns>
-        <GridCommandColumn Title="" Width="5%">
-            <GridCommandButton Command="Edit" Title="Edit"
-                               ThemeColor=""
-                               class="table-btn-icons"
-                               OnClick="@((args)=>OnPLSEdit(args.Item as PLSRequestModel))">
-                <div class="edit-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
-        <GridColumn Field="AssociatedDTROrIRNumber"
-                    Title="AssociatedDTROrIRNumberLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
+        <GridColumn Field="PLSNumber" Title="PLSNumber" />
+        <GridColumn Field="SRNumber" Title="SRNumber" />
+        <GridColumn Field="WorkOrderNumber" Title="WorkOrderNumber" />
+        <GridColumn Field="AssociatedDTROrIRNumber" Title="AssociatedDTROrIRNumber" />
+        <GridColumn Field="TeamOrEventName" Title="TeamOrEventName" />
+        <GridColumn Field="CurrentStatusText" Title="CurrentStatusText" />
+        <GridColumn Field="RedFlagText" Title="RedFlagText" />
+        <GridColumn Field="DestinationCity" Title="DestinationCity" />
+        <GridColumn Field="StartDate" Width="200px">
             <Template>
-                @{
-                    PLSRequestModel dtrnumber = (PLSRequestModel)context;
-                    <div id="target" title="@dtrnumber.AssociatedDTROrIRNumber">
-                        @dtrnumber.AssociatedDTROrIRNumber
-                    </div>
-                }
+                @((context as PLSRequestModel)?.StartDate.ToString("dd/MM/yyyy"))
             </Template>
-
-            <HeaderTemplate>
-                <div title=AssociatedDTROrIRNumberLabel>
-                    AssociatedDTROrIRNumberLabel
-                </div>
-            </HeaderTemplate>
         </GridColumn>
-        <GridColumn Field="SRNumber"
-                    Title="SRNumber"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel srnumber = (PLSRequestModel)context;
-                    <div id="target" title="@srnumber.SRNumber">
-                        @srnumber.SRNumber
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=SRNumber>
-                    SRNumber
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="DateSubmitted"
-                    Title="DateSubmitted"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" DisplayFormat="{0:dd/MMM/yyyy}" Width="17%">
-            <Template>
-                @{
-                    PLSRequestModel datesubmitted = (PLSRequestModel)context;
-                    <div id="target" title="@datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")">
-                        @datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=DateSubmitted>
-                    Model.DateSubmitted
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="ProjectTitle"
-                    Title="ProjectTitle"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel projecttitle = (PLSRequestModel)context;
-                    <div id="target" title="@projecttitle.ProjectTitle">
-                        @projecttitle.ProjectTitle
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=ProjectTitle>
-                    ProjectTitle
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTFundingProgramText"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="16%"
-                    Title="CTFundingProgramLabel">
-            <Template>
-                @{
-                    PLSRequestModel ctfundingprgm = (PLSRequestModel)context;
-                    <div id="target" title="@ctfundingprgm.CTFundingProgramText">
-                        @ctfundingprgm.CTFundingProgramText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTFundingProgramLabel>
-                    CTFundingProgramLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="FundingCountryOrProject"
-                    Title="FundingCountryOrProjectLabel"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel fundingcp = (PLSRequestModel)context;
-                    <div id="target" title="@fundingcp.FundingCountryOrProject">
-                        @fundingcp.FundingCountryOrProject
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=FundingCountryOrProjectLabel>
-                    FundingCountryOrProjectLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTRequestorName"
-                    Title="CTRequestorNameLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="15%">
-            <Template>
-                @{
-                    PLSRequestModel ctrequestorname = (PLSRequestModel)context;
-                    <div id="target" title=" @ctrequestorname.CTRequestorName">
-                        @ctrequestorname.CTRequestorName
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTRequestorNameLabel>
-                    CTRequestorNameLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="StartDate"
-                    Title="StartDate"
-                    ShowFilterCellButtons="false" DisplayFormat="{0:dd/MMM/yyyy}"
-                    Filterable="true" Width="16%">
-            <Template>
-                @{
-                    PLSRequestModel startdate = (PLSRequestModel)context;
-                    <div id="target" title="@startdate.StartDate?.ToString("dd-MMM-yyyy")">
-                        @startdate.StartDate?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=StartDate>
-                    StartDate
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CurrentStatusText"
-                    Title="CurrentStatusLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="8%">
-            <Template>
-                @{
-                    PLSRequestModel currentstatus = (PLSRequestModel)context;
-                    <div id="target" title=" @currentstatus.CurrentStatusText">
-                        @currentstatus.CurrentStatusText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CurrentStatusLabel>
-                    CurrentStatusLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="RedFlagText"
-                    Title="RegFlagLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="9%">
-            <Template>
-                @{
-                    PLSRequestModel redflag = (PLSRequestModel)context;
-                    <div id="target" title="@redflag.RedFlagText">
-                        @redflag.RedFlagText
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=RegFlagLabel>
-                    RegFlagLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridCommandColumn Title="" Width="12%">
-            <GridCommandButton Command="Copy" Title="Copy"
-                               ThemeColor=""
-                               OnClick="@((args)=> OnPLSCopy(args.Item as PLSRequestModel))"
-                               class="table-btn-icons-custom">
-                <div class="copy-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-            <GridCommandButton Command="Delete" Title="Delete"
-                               ThemeColor=""
-                               class="table-btn-icons table-trash-icon">
-                <div class="inactive-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-delete">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
+        <GridColumn Field="CTRequestorName" Title="CTRequestorName" />
+        <GridColumn Field="FundingCountryOrProject" Title="FundingCountryOrProject" />
+        <GridColumn Field="CTFundingProgramText" Title="CTFundingProgramText" />
     </GridColumns>
 </TelerikGrid>
-<TelerikGrid @ref="@GridRef_9"
-             Data="@GridData"
+
+<h3>Grid using Vistual Scroll</h3>
+<TelerikGrid Data="@GridData"
              Pageable="true"
-             PageSize="10"
+             Height="480px" RowHeight="60" PageSize="10" ScrollMode="@GridScrollMode.Virtual"
              Sortable="true"
              ConfirmDelete="true"
              SortMode="@SortMode.Multiple"
@@ -2094,299 +279,39 @@
              Width="100%"
              Class="userprofilelisttable table-wrapper data-grid-table-wrapper">
     <GridColumns>
-        <GridCommandColumn Title="" Width="5%">
-            <GridCommandButton Command="Edit" Title="Edit"
-                               ThemeColor=""
-                               class="table-btn-icons"
-                               OnClick="@((args)=>OnPLSEdit(args.Item as PLSRequestModel))">
-                <div class="edit-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
-        <GridColumn Field="AssociatedDTROrIRNumber"
-                    Title="AssociatedDTROrIRNumberLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
+        <GridColumn Field="PLSNumber" Title="PLSNumber" />
+        <GridColumn Field="SRNumber" Title="SRNumber" />
+        <GridColumn Field="WorkOrderNumber" Title="WorkOrderNumber" />
+        <GridColumn Field="AssociatedDTROrIRNumber" Title="AssociatedDTROrIRNumber" />
+        <GridColumn Field="TeamOrEventName" Title="TeamOrEventName" />
+        <GridColumn Field="CurrentStatusText" Title="CurrentStatusText" />
+        <GridColumn Field="RedFlagText" Title="RedFlagText" />
+        <GridColumn Field="DestinationCity" Title="DestinationCity" />
+        <GridColumn Field="StartDate" Width="200px">
             <Template>
-                @{
-                    PLSRequestModel dtrnumber = (PLSRequestModel)context;
-                    <div id="target" title="@dtrnumber.AssociatedDTROrIRNumber">
-                        @dtrnumber.AssociatedDTROrIRNumber
-                    </div>
-                }
+                @((context as PLSRequestModel)?.StartDate.ToString("dd/MM/yyyy"))
             </Template>
-
-            <HeaderTemplate>
-                <div title=AssociatedDTROrIRNumberLabel>
-                    AssociatedDTROrIRNumberLabel
-                </div>
-            </HeaderTemplate>
         </GridColumn>
-        <GridColumn Field="SRNumber"
-                    Title="SRNumber"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel srnumber = (PLSRequestModel)context;
-                    <div id="target" title="@srnumber.SRNumber">
-                        @srnumber.SRNumber
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=SRNumber>
-                    SRNumber
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="DateSubmitted"
-                    Title="DateSubmitted"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" DisplayFormat="{0:dd/MMM/yyyy}" Width="17%">
-            <Template>
-                @{
-                    PLSRequestModel datesubmitted = (PLSRequestModel)context;
-                    <div id="target" title="@datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")">
-                        @datesubmitted.DateSubmitted?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=DateSubmitted>
-                    Model.DateSubmitted
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="ProjectTitle"
-                    Title="ProjectTitle"
-                    ShowFilterCellButtons="false" Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel projecttitle = (PLSRequestModel)context;
-                    <div id="target" title="@projecttitle.ProjectTitle">
-                        @projecttitle.ProjectTitle
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=ProjectTitle>
-                    ProjectTitle
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTFundingProgramText"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="16%"
-                    Title="CTFundingProgramLabel">
-            <Template>
-                @{
-                    PLSRequestModel ctfundingprgm = (PLSRequestModel)context;
-                    <div id="target" title="@ctfundingprgm.CTFundingProgramText">
-                        @ctfundingprgm.CTFundingProgramText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTFundingProgramLabel>
-                    CTFundingProgramLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="FundingCountryOrProject"
-                    Title="FundingCountryOrProjectLabel"
-                    ShowFilterCellButtons="false"
-                    Filterable="true" Width="12%">
-            <Template>
-                @{
-                    PLSRequestModel fundingcp = (PLSRequestModel)context;
-                    <div id="target" title="@fundingcp.FundingCountryOrProject">
-                        @fundingcp.FundingCountryOrProject
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=FundingCountryOrProjectLabel>
-                    FundingCountryOrProjectLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CTRequestorName"
-                    Title="CTRequestorNameLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="15%">
-            <Template>
-                @{
-                    PLSRequestModel ctrequestorname = (PLSRequestModel)context;
-                    <div id="target" title=" @ctrequestorname.CTRequestorName">
-                        @ctrequestorname.CTRequestorName
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CTRequestorNameLabel>
-                    CTRequestorNameLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="StartDate"
-                    Title="StartDate"
-                    ShowFilterCellButtons="false" DisplayFormat="{0:dd/MMM/yyyy}"
-                    Filterable="true" Width="16%">
-            <Template>
-                @{
-                    PLSRequestModel startdate = (PLSRequestModel)context;
-                    <div id="target" title="@startdate.StartDate?.ToString("dd-MMM-yyyy")">
-                        @startdate.StartDate?.ToString("dd-MMM-yyyy")
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=StartDate>
-                    StartDate
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="CurrentStatusText"
-                    Title="CurrentStatusLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="8%">
-            <Template>
-                @{
-                    PLSRequestModel currentstatus = (PLSRequestModel)context;
-                    <div id="target" title=" @currentstatus.CurrentStatusText">
-                        @currentstatus.CurrentStatusText
-                    </div>
-
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=CurrentStatusLabel>
-                    CurrentStatusLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridColumn Field="RedFlagText"
-                    Title="RegFlagLabel"
-                    ShowFilterCellButtons="false" Filterable="true" Width="9%">
-            <Template>
-                @{
-                    PLSRequestModel redflag = (PLSRequestModel)context;
-                    <div id="target" title="@redflag.RedFlagText">
-                        @redflag.RedFlagText
-                    </div>
-                }
-            </Template>
-            <HeaderTemplate>
-                <div title=RegFlagLabel>
-                    RegFlagLabel
-                </div>
-            </HeaderTemplate>
-        </GridColumn>
-        <GridCommandColumn Title="" Width="12%">
-            <GridCommandButton Command="Copy" Title="Copy"
-                               ThemeColor=""
-                               OnClick="@((args)=> OnPLSCopy(args.Item as PLSRequestModel))"
-                               class="table-btn-icons-custom">
-                <div class="copy-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-edit">
-                </TelerikTooltip>
-            </GridCommandButton>
-            <GridCommandButton Command="Delete" Title="Delete"
-                               ThemeColor=""
-                               class="table-btn-icons table-trash-icon">
-                <div class="inactive-icon"></div>
-                <TelerikTooltip TargetSelector=".btn>GridCommandButton[Title]"
-                                Position="@TooltipPosition.Right"
-                                ShowOn="@TooltipShowEvent.Hover"
-                                Id="position-tooltip-delete">
-                </TelerikTooltip>
-            </GridCommandButton>
-        </GridCommandColumn>
+        <GridColumn Field="CTRequestorName" Title="CTRequestorName" />
+        <GridColumn Field="FundingCountryOrProject" Title="FundingCountryOrProject" />
+        <GridColumn Field="CTFundingProgramText" Title="CTFundingProgramText" />
     </GridColumns>
 </TelerikGrid>
-
-<TelerikTooltip TargetSelector="#target"
-                Position="@TooltipPosition.Top">
-</TelerikTooltip>
 
 
 @code {
-    private Component component = new Component();
-    // Track whether Dispose has been called.
-    private bool disposed = false;
-    private PLSRequestModel Model { get; set; } = default!;
-    private TelerikGrid<PLSRequestModel>? GridRef { get; set; } = default!;
-    private TelerikGrid<PLSRequestModel>? GridRef_1 { get; set; } = default!;
-    private TelerikGrid<PLSRequestModel>? GridRef_2 { get; set; } = default!;
-    private TelerikGrid<PLSRequestModel>? GridRef_3 { get; set; } = default!;
-    private TelerikGrid<PLSRequestModel>? GridRef_4 { get; set; } = default!;
-    private TelerikGrid<PLSRequestModel>? GridRef_5 { get; set; } = default!;
-    private TelerikGrid<PLSRequestModel>? GridRef_6 { get; set; } = default!;
-    private TelerikGrid<PLSRequestModel>? GridRef_7 { get; set; } = default!;
-    private TelerikGrid<PLSRequestModel>? GridRef_8 { get; set; } = default!;
-    private TelerikGrid<PLSRequestModel>? GridRef_9 { get; set; } = default!;
-    List<PLSRequestModel> GridData { get; set; } = new List<PLSRequestModel>();
-    public void OnPLSEdit(PLSRequestModel item)
+   public List<PLSRequestModel>? GridData { get; set; }
+    protected override async Task OnInitializedAsync()
     {
-
-    }
-    public void OnPLSCopy(PLSRequestModel item)
-    {
-    }
-    private async void OnPLSDelete(Guid Id)
-    {
-    }
-    protected override async Task OnParametersSetAsync()
-    {
-
-    }
-    private async Task Refreshgrid()
-    {
-        Console.WriteLine("Refreshgrid...");
-
-        GridRef.Rebind();
-        await Task.CompletedTask;
-    }
-    protected override void OnInitialized()
-    {
-        Console.WriteLine("OnInitialized...");
-
-        GridData = Enumerable.Range(1, 1000).Select(x => new PLSRequestModel
-            {
-
-                PLSNumber = "pls number" + x,
-                SRNumber = "SR Number" + x,
-                WorkOrderNumber = "WorkOrderNumber" + x,
-                AssociatedDTROrIRNumber = "AssociatedDTROrIRNumber" + x,
-                TeamOrEventName = "Team/EventName" + x,
-                CurrentStatusText = "CurrentStatus" + x,
-                RedFlagText = "Yes",
-                DestinationCity = "City" + x,
-                StartDate = DateTime.Now.AddMonths(-x).Date,
-                CTRequestorName = "CTR" + x,
-                FundingCountryOrProject = "Country/Project" + x,
-                CTFundingProgramText = "CTRProgram" + x
-
-            }).ToList();
+        GridData = await GetData();
     }
 
-    protected async Task OnReadItems(GridReadEventArgs args)
+    private async Task<List<PLSRequestModel>> GetData()
     {
-        try
+        return await Task.Run(() =>
         {
-            Console.WriteLine("OnReadItems...");
-            GridData = Enumerable.Range(1, 10000).Select(x => new PLSRequestModel
+            return Enumerable.Range(1, 1000).Select(x => new PLSRequestModel
                 {
-
                     PLSNumber = "pls number" + x,
                     SRNumber = "SR Number" + x,
                     WorkOrderNumber = "WorkOrderNumber" + x,
@@ -2399,18 +324,11 @@
                     CTRequestorName = "CTR" + x,
                     FundingCountryOrProject = "Country/Project" + x,
                     CTFundingProgramText = "CTRProgram" + x
-
                 }).ToList();
-
-            args.Data = GridData;
-            StateHasChanged();
-            await Task.CompletedTask;
-        }
-        catch (Exception ex)
-        {
-
-        }
+        });
     }
+
+
     public class PLSRequestModel
     {
         public Guid? Id { get; set; }
@@ -2428,7 +346,7 @@
         public string? RedFlagText { get; set; }
         public Guid? DestinationCountry { get; set; }
         public string? DestinationCity { get; set; }
-        public DateTime? StartDate { get; set; }
+        public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public Guid? CTFundingProgram { get; set; }
         public string? CTFundingProgramText { get; set; }
@@ -2487,92 +405,4 @@
         #endregion
 
     }
-    #region Object Dispose
-    // Other managed resource this class uses.
-
-
-    void IDisposable.Dispose()
-    {
-        Dispose(disposing: true);
-        // This object will be cleaned up by the Dispose method.
-        // Therefore, you should call GC.SuppressFinalize to
-        // take this object off the finalization queue
-        // and prevent finalization code for this object
-        // from executing a second time.
-        GC.SuppressFinalize(this);
-        if (GC_Collect)
-        {
-            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-            //GC.Collect();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-        }
-    }
-    private int currentCount = 0;
-    private bool GC_Collect = false;
-
-    //protected override bool ShouldRender()
-    //{
-    //    return shouldRender;
-    //}
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!this.disposed)
-        {
-            // If disposing equals true, dispose all managed
-            // and unmanaged resources.
-            if (disposing)
-            {
-                // Dispose managed resources.
-                component.Dispose();
-                if (GridRef is not null)
-                    GridRef?.Dispose();
-                if (GridRef_1 is not null)
-                    GridRef_1?.Dispose();
-                if (GridRef_2 is not null)
-                    GridRef_2?.Dispose();
-                if (GridRef_3 is not null)
-                    GridRef_3?.Dispose();
-                if (GridRef_4 is not null)
-                    GridRef_4?.Dispose();
-                if (GridRef_5 is not null)
-                    GridRef_5?.Dispose();
-                if (GridRef_6 is not null)
-                    GridRef_6?.Dispose();
-                if (GridRef_7 is not null)
-                    GridRef_7?.Dispose();
-                if (GridRef_7 is not null)
-                    GridRef_7?.Dispose();
-                if (GridRef_8 is not null)
-                    GridRef_8?.Dispose();
-                if (GridRef_9 is not null)
-                    GridRef_9?.Dispose();
-
-                GridData = null;
-
-            }
-
-            // Call the appropriate methods to clean up
-            // unmanaged resources here.
-            // If disposing is false,
-            // only the following code is executed.
-
-
-            // Note disposing has been done.
-            disposed = true;
-        }
-    }
-    //public void Dispose()
-    //{
-    //    if (objReference is not null)
-    //        objReference?.Dispose();
-
-    //    if (unitofWork is not null)
-    //        unitofWork.Dispose();
-
-    //    ProgramListForm = null;
-    //    StatusDropDownList = null;
-    //}
-    #endregion
 }
